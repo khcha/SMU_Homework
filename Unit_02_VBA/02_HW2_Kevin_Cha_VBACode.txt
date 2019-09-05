@@ -1,0 +1,100 @@
+Sub Stock_Data():
+    
+        'Last row number for raw data
+        lastrow = Cells(Rows.Count, 7).End(xlUp).Row
+
+        'Column Names
+        Range("I1").Value = "Ticker"
+        Range("J1").Value = "Yearly Change"
+        Range("K1").Value = "Percent Change"
+        Range("L1").Value = "Total Stock Volume"
+        
+        'Autofit Column Width
+        Range("I:I,J:J,K:K,L:L").EntireColumn.AutoFit
+               
+        'Variables
+        Dim Ticker_Name As String
+        Dim Total_Stock_Volume As Double
+        Total_Stock_Volume = 0
+    
+        Dim Open_Price As Double
+        Dim Close_Price As Double
+        Dim Yearly_Change As Double
+        
+        Dim Percent_Change As Double
+        
+        Dim Row_Start As Double
+        Row_Start = 2
+        Dim Column_Start As Integer
+        Column_Start = 1
+        Dim i As Long
+        Dim k As Long
+        Dim m As Long
+        
+        Open_Price = Cells(2, Column_Start + 2).Value
+        
+        For i = 2 To lastrow
+            If Cells(i + 1, Column_Start).Value <> Cells(i, Column_Start).Value Then
+                Ticker_Name = Cells(i, Column_Start).Value
+                Cells(Row_Start, Column_Start + 8).Value = Ticker_Name
+                Close_Price = Cells(i, Column_Start + 5).Value
+                Yearly_Change = Close_Price - Open_Price
+                Cells(Row_Start, Column_Start + 9).Value = Yearly_Change
+                If (Open_Price = 0 And Close_Price = 0) Then
+                    Percent_Change = 0
+                '
+                ElseIf (Open_Price = 0 And Close_Price <> 0) Then
+                    Percent_Change = (Close_Price - Open_Price) / 0.01
+                Else
+                    Percent_Change = (Close_Price - Open_Price) / Open_Price
+                    Cells(Row_Start, Column_Start + 10).Value = Percent_Change
+                    Cells(Row_Start, Column_Start + 10).NumberFormat = "0.00%"
+                End If
+        
+            
+                Total_Stock_Volume = Total_Stock_Volume + Cells(i, Column_Start + 6).Value
+                Cells(Row_Start, Column_Start + 11).Value = Total_Stock_Volume
+                Row_Start = Row_Start + 1
+                Open_Price = Cells(i + 1, Column_Start + 2)
+                Total_Stock_Volume = 0
+            Else
+                Total_Stock_Volume = Total_Stock_Volume + Cells(i, Column_Start + 6).Value
+            End If
+        Next i
+    
+        'Last row number for summary from moderate part
+        lastrow2 = Cells(Rows.Count, 9).End(xlUp).Row
+        For k = 2 To lastrow2
+            If Cells(k, 10).Value = "" Then
+                Cells(k, 10).Interior.ColorIndex = 0
+            ElseIf Cells(k, 10).Value < 0 Then
+                Cells(k, 10).Interior.ColorIndex = 3
+            Else: Cells(k, 10).Interior.ColorIndex = 4
+                    
+            End If
+        Next k
+        
+        'Hard part of HW2
+        Range("N2").Value = "Greatest % Increase"
+        Range("N3").Value = "Greatest % Decrease"
+        Range("N4").Value = "Greatest Total Volume"
+        Range("O1").Value = "Ticker"
+        Range("P1").Value = "Value"
+        
+        For m = 2 To lastrow2
+            If Cells(m, 11).Value = Application.WorksheetFunction.Max(Range("K2:K" & lastrow2)) Then
+                Cells(2, 15).Value = Cells(m, 9).Value
+                Cells(2, 16).Value = Cells(m, 11).Value
+                Cells(2, 16).NumberFormat = "0.00%"
+            ElseIf Cells(m, 11).Value = Application.WorksheetFunction.Min(Range("K2:K" & lastrow2)) Then
+                Cells(3, 15).Value = Cells(m, 9).Value
+                Cells(3, 16).Value = Cells(m, 11).Value
+                Cells(3, 16).NumberFormat = "0.00%"
+            ElseIf Cells(m, 12).Value = Application.WorksheetFunction.Max(Range("L2:L" & lastrow2)) Then
+                Cells(4, 15).Value = Cells(m, 9).Value
+                Cells(4, 16).Value = Cells(m, 12).Value
+            End If
+        Next m
+
+        Range("N:N,O:O,P:P").EntireColumn.AutoFit
+End Sub
