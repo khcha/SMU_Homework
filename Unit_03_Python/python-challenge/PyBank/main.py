@@ -5,7 +5,7 @@ from pathlib import Path
 print("Financial Analysis")
 print("-----------------------------------")
 
-filepath = os.path.join('Instructions/PyBank/Resources/budget_data.csv')
+filepath = os.path.join('python-challenge/PyBank/Resources/budget_data.csv')
 
 #Total month
 month = 0

@@ -5,7 +5,7 @@ from pathlib import Path
 print("Election Results")
 print("-----------------------------------")
 
-filepath = os.path.join('Instructions/PyPoll/Resources/election_data.csv')
+filepath = os.path.join('python-challenge/PyPoll/Resources/election_data.csv')
 
 #Total Voters
 voters = 0
